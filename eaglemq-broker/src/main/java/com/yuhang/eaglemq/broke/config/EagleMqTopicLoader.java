@@ -34,7 +34,12 @@ public class EagleMqTopicLoader {
         CommonCache.setEagleMqTopicModelList(eagleMqTopicModelList);
     }
 
+    /**
+     * 开启一个刷新内存到磁盘的任务
+     */
     public void startRefreshEagleMqTopicInfoTask() {
+        //异步线程
+        //每3秒将内存中的配置刷新到磁盘里面
         CommonThreadPoolConfig.refreshEagleMqTopicExecutor.execute(() -> {
             do {
                 try {
@@ -42,10 +47,17 @@ public class EagleMqTopicLoader {
                     List<EagleMqTopicModel> eagleMqTopicModelList = CommonCache.getEagleMqTopicModelList();
                     FileContentUtil.overWriteToFile(filePath, JSON.toJSONString(eagleMqTopicModelList));
                     log.info("refresh disk");
+
+                    // 判断主线程是否关闭了线程池，如果关闭了，该任务也就应该相应取消，以达到正常关闭线程池的目的
+                    if (CommonThreadPoolConfig.refreshEagleMqTopicExecutor.isShutdown()) {
+                        log.info("refresh disk is shutdown");
+                        return;
+                    }
                 } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                    Thread.currentThread().interrupt();
+                    log.error("refresh disk error", e);
                 }
-            } while (true);
+            } while (!Thread.currentThread().isInterrupted());
         });
     }
 }
