@@ -1,0 +1,26 @@
+[
+  {
+    "commitLogModel": {
+      "fileName": "00000000",
+      "offset": 0,
+      "offsetLimit": 1048576
+    },
+    "createAt": 1701918231281,
+    "queueList": [
+      {
+        "currentOffset": 133,
+        "id": 1,
+        "maxOffset": 155,
+        "minOffset": 111
+      },
+      {
+        "currentOffset": 133,
+        "id": 2,
+        "maxOffset": 155,
+        "minOffset": 111
+      }
+    ],
+    "topic": "order_cancel_topic",
+    "updateAt": 1701918231280
+  }
+]
