@@ -38,7 +38,7 @@ public class CommitLogFileNameUtil {
             throw new IllegalArgumentException("fileName must has 8 chars");
         }
 
-        Long fileIndex = Long.valueOf(oldFileName);
+        Integer fileIndex = Integer.valueOf(oldFileName);
         fileIndex++;
         String newFileName = String.valueOf(fileIndex);
         int needFullLen = 8 - newFileName.length();

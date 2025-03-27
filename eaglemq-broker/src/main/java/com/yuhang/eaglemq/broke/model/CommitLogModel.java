@@ -2,16 +2,18 @@ package com.yuhang.eaglemq.broke.model;
 
 import lombok.Data;
 
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.yuhang.eaglemq.broke.constants.BrokerConstants.COMMIT_LOG_DEFAULT_MMAP_SIZE;
 
 @Data
 public class CommitLogModel {
 
     private String fileName;
-    private AtomicLong offset;
-    private Long offsetLimit;
+    private AtomicInteger offset;
+    private Integer offsetLimit = COMMIT_LOG_DEFAULT_MMAP_SIZE;
 
-    public Long countDiff() {
+    public int countDiff() {
         return offsetLimit - offset.get();
     }
 }

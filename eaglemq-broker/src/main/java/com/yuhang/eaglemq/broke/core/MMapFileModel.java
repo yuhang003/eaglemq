@@ -20,7 +20,7 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.yuhang.eaglemq.broke.constants.BrokerConstants.COMMIT_LOG_DEFAULT_MMAP_SIZE;
 
@@ -73,7 +73,7 @@ public class MMapFileModel {
 
     private String getLatestCommitLogFile() {
         CommitLogModel commitLogModel = getCommitLogModel(topicName);
-        Long diff = commitLogModel.countDiff();
+        int diff = commitLogModel.countDiff();
 
         String filePath = null;
         if (diff <= 0) {
@@ -160,15 +160,15 @@ public class MMapFileModel {
      * @return
      */
     private void checkCommitLogHasEnableSpace(CommitLogMessageModel commitLogMessageModel, CommitLogModel commitLogModel) throws IOException {
-        Long writeAbleOffsetNum = commitLogModel.countDiff();
+        int writeAbleOffsetNum = commitLogModel.countDiff();
         // 如果不够写入
         if (writeAbleOffsetNum < commitLogMessageModel.getSize()) {
             // 创建新的文件
             CommitLogFilePath newCommitLogFilePath = createNewCommitLogFile(topicName, commitLogModel);
             // 将topic的文件名设置为新的文件，并重置Offset
             commitLogModel.setFileName(newCommitLogFilePath.getFileName());
-            commitLogModel.setOffset(new AtomicLong(0));
-            commitLogModel.setOffsetLimit(Long.valueOf(COMMIT_LOG_DEFAULT_MMAP_SIZE));
+            commitLogModel.setOffset(new AtomicInteger(0));
+            commitLogModel.setOffsetLimit(COMMIT_LOG_DEFAULT_MMAP_SIZE);
 
             // 老文件MMap映射解绑
             clean();
